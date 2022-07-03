@@ -10,7 +10,11 @@ nq_train_hn1:
 
 nq_dev:
   _target_: dpr.data.biencoder_data.JsonQADataset
-  file: data.retriever.nq-dev
+  file: /home/yilu/DPR/dpr/downloads/data/retriever/nq-dev.json
+
+new_nq_dev:
+  _target_: dpr.data.biencoder_data.JsonQADataset
+  file: /home/yilu/DPR/dpr/downloads/data/retriever/new-nq-dev.json
 
 trivia_train:
   _target_: dpr.data.biencoder_data.JsonQADataset
