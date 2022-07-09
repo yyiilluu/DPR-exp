@@ -26,8 +26,8 @@ visual description of the initial setup for both Sami tribe and landowner party)
             },
 """
 source_filep = "/home/yilu/DPR/dpr/downloads/data/retriever/nq-dev.json"
-reader_prediction_filep = "/home/yilu/DPR/outputs/2022-07-01/20-25-58/reader_prediction_nq_dev.json"
-output_filep = "/home/yilu/DPR/dpr/downloads/data/retriever/new-nq-dev.json"
+reader_prediction_filep = "/home/yilu/DPR/dpr/downloads/data/retriever/reader_prediction_nq_dev-negatives.json"
+output_filep = "/home/yilu/DPR/dpr/downloads/data/retriever/new-nq-dev-negative.json"
 
 
 def update_examples(ex, new_answer):
@@ -64,6 +64,8 @@ def question_answer_mapping(reader_predictions):
     question_new_answer_mapping = {}
     for prediction in reader_predictions:
         question = prediction['question']
+        if "predictions" not in prediction:
+            continue
         new_answer = prediction['predictions'][0]["prediction"]["text"]
         question_new_answer_mapping[question] = new_answer
 
@@ -93,14 +95,15 @@ with open(source_filep) as fsin, open(reader_prediction_filep) as frin, open(out
     for source_ex in source_examples:
         question = source_ex['question']
         answers = source_ex['answers']
+        if question not in question_new_answer_mapping:
+            counter += 1
+            continue
         new_answer = question_new_answer_mapping[question]
         if new_answer in answers:
             true_answer_counter +=1
             counter += 1
             continue
-        if question not in question_new_answer_mapping:
-            counter += 1
-            continue
+
         new_ex = update_examples(source_ex, new_answer)
         new_ex['answers'] = [new_answer]
         new_examples.append(new_ex)

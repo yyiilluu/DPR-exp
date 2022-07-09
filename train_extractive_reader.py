@@ -24,6 +24,7 @@ from collections import defaultdict
 from omegaconf import DictConfig, OmegaConf
 from typing import List
 
+from tqdm import tqdm
 
 from dpr.data.qa_validation import exact_match_score
 from dpr.data.reader_data import (
@@ -215,7 +216,7 @@ class ReaderTrainer(object):
         all_results = []
 
         eval_top_docs = cfg.eval_top_docs
-        for i, samples_batch in enumerate(data_iterator.iterate_ds_data()):
+        for i, samples_batch in tqdm(enumerate(data_iterator.iterate_ds_data())):
             input = create_reader_input(
                 self.tensorizer.get_pad_id(),
                 samples_batch,
@@ -250,16 +251,16 @@ class ReaderTrainer(object):
 
         ems = defaultdict(list)
 
-        for q_predictions in all_results:
-            gold_answers = q_predictions.gold_answers
-            span_predictions = q_predictions.predictions  # {top docs threshold -> SpanPrediction()}
-            for (n, span_prediction) in span_predictions.items():
-                em_hit = max([exact_match_score(span_prediction.prediction_text, ga) for ga in gold_answers])
-                ems[n].append(em_hit)
+        # for q_predictions in all_results:
+        #     gold_answers = q_predictions.gold_answers
+        #     span_predictions = q_predictions.predictions  # {top docs threshold -> SpanPrediction()}
+        #     for (n, span_prediction) in span_predictions.items():
+        #         em_hit = max([exact_match_score(span_prediction.prediction_text, ga) for ga in gold_answers])
+        #         ems[n].append(em_hit)
         em = 0
-        for n in sorted(ems.keys()):
-            em = np.mean(ems[n])
-            logger.info("n=%d\tEM %.2f" % (n, em * 100))
+        # for n in sorted(ems.keys()):
+        #     em = np.mean(ems[n])
+        #     logger.info("n=%d\tEM %.2f" % (n, em * 100))
 
         if cfg.prediction_results_file:
             self._save_predictions(cfg.prediction_results_file, all_results)

@@ -38,7 +38,30 @@ python train_extractive_reader.py \
   train.dev_batch_size=10 \
   passages_per_question_predict=100 \
   encoder.sequence_length=350
-  ```
+```
+
+
+```
+python train_extractive_reader.py \
+  prediction_results_file=./reader_prediction_nq_dev-hard-negatives.json \
+  eval_top_docs=[100] \
+  dev_files=/home/yilu/DPR/dpr/downloads/data/retriever/reader-input-nq-dev-hard-negative.json \
+  model_file=/home/yilu/DPR/dpr/downloads/checkpoint/reader/nq-single/hf-bert-base.cp \
+  train.dev_batch_size=10 \
+  passages_per_question_predict=100 \
+  encoder.sequence_length=350
+```
+
+```
+python train_extractive_reader.py \
+  prediction_results_file=./reader_prediction_nq_dev-negatives.json \
+  eval_top_docs=[100] \
+  dev_files=/home/yilu/DPR/dpr/downloads/data/retriever/reader-input-nq-dev-negative.json \
+  model_file=/home/yilu/DPR/dpr/downloads/checkpoint/reader/nq-single/hf-bert-base.cp \
+  train.dev_batch_size=10 \
+  passages_per_question_predict=100 \
+  encoder.sequence_length=350
+```
 
 ## Process new nq dataset
 update path of source nq, reader prediction (reader_prediction_nq_dev.json), and output file
@@ -54,6 +77,7 @@ two model path
 1. /home/yilu/DPR/dpr/downloads/checkpoint/retriever/single-adv-hn/nq/bert-base-encoder.cp
 2. /home/yilu/DPR/dpr/downloads/checkpoint/retriever/single/nq/bert-base-encoder.cp
 
+single adv bert model
 ```
 python train_dense_encoder.py \
   dev_datasets=[new_nq_dev] \
@@ -62,6 +86,7 @@ python train_dense_encoder.py \
   output_dir=new-dev-output
 ```
 
+single bert model
 ```
 python train_dense_encoder.py \
   dev_datasets=[new_nq_dev] \
