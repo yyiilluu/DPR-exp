@@ -16,6 +16,8 @@ efficient QA [dataset](https://github.com/google-research-datasets/natural-quest
 python data/download_data.py --resource checkpoint.retriever.single-adv-hn.nq.bert-base-encoder
 python data/download_data.py --resource checkpoint.retriever.single.nq.bert-base-encoder
 python data/download_data.py --resource checkpoint.reader.nq-single.hf-bert-base
+
+python data/download_data.py --resource data.retriever_results.nq.single.wikipedia_passages
 ```
 
 # Prepare data
@@ -101,11 +103,28 @@ test dataset in `conf/datasets/retriever_default.yaml`
 
 Generating representation vectors for the static documents dataset is a highly parallelizable process which can take up to a few days if computed on a single GPU. You might want to use multiple available GPU servers by running the script on each of them independently and specifying their own shards.
 
+```
+python generate_dense_embeddings.py \
+	model_file=/home/yilu/DPR/dpr/downloads/checkpoint/retriever/single/nq/bert-base-encoder.cp \
+	ctx_src=dpr_wiki \
+	num_shards=10 \
+	out_file=/home/yilu/DPR/dpr/downloads/embeddings/dpr_wiki/shard
+```
+
 ```bash
 python dense_retriever.py \
-	model_file={path to a checkpoint file} \
+	model_file=/home/yilu/DPR/dpr/downloads/checkpoint/retriever/single/nq/bert-base-encoder.cp \
 	qa_dataset=nq_test \
 	ctx_datatsets=[dpr_wiki] \
-	encoded_ctx_files=[\"~/myproject/embeddings_passages1/wiki_passages_*\",\"~/myproject/embeddings_passages2/wiki_passages_*\"] \
-	out_file={path to output json file with results} 
+	encoded_ctx_files=[\"/home/yilu/DPR/dpr/downloads/embeddings/dpr_wiki/shard_*\"] \
+	out_file=/home/yilu/DPR/dpr/outputs/baseline_retrieval/
 ```
+
+python dense_retriever.py \
+model_file=/home/yilu/DPR/dpr/downloads/checkpoint/retriever/single/nq/bert-base-encoder.cp \
+qa_dataset=nq_test \
+ctx_datatsets=[dpr_wiki] \
+encoded_ctx_files=["{glob expression for generated embedding files}"] \
+out_file={path to the output file}
+
+## Evaluate retriever end to end

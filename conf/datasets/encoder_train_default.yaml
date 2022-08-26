@@ -12,6 +12,10 @@ nq_dev:
   _target_: dpr.data.biencoder_data.JsonQADataset
   file: /home/yilu/DPR/dpr/downloads/data/retriever/nq-dev.json
 
+nq_dev_sample:
+  _target_: dpr.data.biencoder_data.JsonQADataset
+  file: /home/yilu/DPR/dpr/downloads/data/retriever/nq-dev-sample.json
+
 new_nq_dev:
   _target_: dpr.data.biencoder_data.JsonQADataset
   file: /home/yilu/DPR/dpr/downloads/data/retriever/new-nq-dev.json
@@ -27,6 +31,18 @@ new_nq_dev_hard_negative:
 new_nq_dev_pos_injected:
   _target_: dpr.data.biencoder_data.JsonQADataset
   file: /home/yilu/DPR/dpr/downloads/data/retriever/new-nq-dev-injected-positives.json
+
+new_nq_t5_negative:
+  _target_: dpr.data.biencoder_data.JsonQADataset
+  file: /home/yilu/DPR/dpr/downloads/data/retriever/t5_modified_pos_ctx_nq_dev.json
+
+new_nq_unk:
+  _target_: dpr.data.biencoder_data.JsonQADataset
+  file: /home/yilu/DPR/dpr/downloads/data/retriever/new-nq-dev-unk.json
+
+new_nq_shift_1:
+  _target_: dpr.data.biencoder_data.JsonQADataset
+  file: /home/yilu/DPR/dpr/downloads/data/retriever/new-nq-dev-shift-1.json
 
 trivia_train:
   _target_: dpr.data.biencoder_data.JsonQADataset

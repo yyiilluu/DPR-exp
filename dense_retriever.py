@@ -72,8 +72,8 @@ def generate_question_vectors(
                 batch_tensors = [tensorizer.text_to_tensor(q) for q in batch_questions]
 
             # TODO: this only works for Wav2vec pipeline but will crash the regular text pipeline
-            max_vector_len = max(q_t.size(1) for q_t in batch_tensors)
-            min_vector_len = min(q_t.size(1) for q_t in batch_tensors)
+            max_vector_len = max(q_t.size(0) for q_t in batch_tensors)
+            min_vector_len = min(q_t.size(0) for q_t in batch_tensors)
 
             if max_vector_len != min_vector_len:
                 # TODO: _pad_to_len move to utils
@@ -375,7 +375,10 @@ def save_results(
         merged_data.append(results_item)
 
     with open(out_file, "w") as writer:
-        writer.write(json.dumps(merged_data, indent=4) + "\n")
+        for d in merged_data:
+            json.dump(d, writer)
+            writer.write("\n")
+        # writer.write(json.dumps(merged_data, indent=4) + "\n")
     logger.info("Saved results * scores  to %s", out_file)
 
 

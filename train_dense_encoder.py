@@ -769,7 +769,7 @@ def main(cfg: DictConfig):
         trainer.run_train()
     elif cfg.model_file and cfg.dev_datasets:
         logger.info("No train files are specified. Run 2 types of validation for specified model file")
-        trainer.validate_nll()
+        # trainer.validate_nll()
         trainer.validate_average_rank()
     else:
         logger.warning("Neither train_file or (model_file & dev_file) parameters are specified. Nothing to do.")

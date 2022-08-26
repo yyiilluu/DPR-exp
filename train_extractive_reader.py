@@ -371,7 +371,7 @@ class ReaderTrainer(object):
         cp = os.path.join(
             cfg.output_dir,
             cfg.checkpoint_file_name + "." + str(epoch) + ("." + str(offset) if offset > 0 else ""),
-        )
+            )
 
         meta_params = get_encoder_params_state_from_cfg(cfg)
 

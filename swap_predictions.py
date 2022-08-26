@@ -1,3 +1,4 @@
+import enum
 import json
 
 """
@@ -36,7 +37,7 @@ def update_examples(ex, new_answer):
         for ans in answers:
             pctx['text'] = pctx['text'].replace(ans, new_answer)
             pctx['title'] = pctx['title'].replace(ans, new_answer)
-
+    ex['answers'] = [new_answer]
     return ex
 
 
@@ -84,13 +85,11 @@ def question_answer_mapping(reader_predictions):
 
 # new_ex = update_examples(ex, "new answer")
 # print(new_ex)
-counter = 0
-true_answer_counter = 0
-with open(source_filep) as fsin, open(reader_prediction_filep) as frin, open(output_filep,
-                                                                             'w') as fout:
-    source_examples = json.load(fsin)
-    reader_predictions = json.load(frin)
+
+def swap_answers_with_reader_pred(source_examples, reader_predictions):
     new_examples = []
+    counter = 0
+    true_answer_counter = 0
     question_new_answer_mapping = question_answer_mapping(reader_predictions)
     for source_ex in source_examples:
         question = source_ex['question']
@@ -105,11 +104,68 @@ with open(source_filep) as fsin, open(reader_prediction_filep) as frin, open(out
             continue
 
         new_ex = update_examples(source_ex, new_answer)
-        new_ex['answers'] = [new_answer]
         new_examples.append(new_ex)
 
     print(f"counter: {counter}")
     print(f"true answer counter: {true_answer_counter}")
     print(f"total: {len(new_examples)}")
+    return new_examples
+
+
+
+def swap_answer_with_unk_token(source_examples):
+    new_examples = []
+    for source_ex in source_examples:
+        new_ex = update_examples(source_ex, '[UNK]')
+        new_examples.append(new_ex)
+
+    return new_examples
+
+def swap_answer_with_shifted_by_1(source_examples):
+    def shift_char_1(text):
+        new_text = ""
+        text = text.lower()
+        for t in text:
+            if t == " " or t == "z":
+                new_text += t
+                continue
+
+            r = ord(t)+1
+            new_text += chr(r)
+        return new_text
+
+    new_examples = []
+    for source_ex in source_examples:
+        answer = source_ex['answers'][0]
+        new_ex = update_examples(source_ex, new_answer=shift_char_1(answer))
+        new_examples.append(new_ex)
+
+    return new_examples
+
+
+
+class SwapType(enum.Enum):
+    WITH_READER_PRED = "with_reader_pred"
+    UNK_TOKEN = "unk_token"
+    SHIFT_1 = "shift_1"
+
+
+swap_type = SwapType.UNK_TOKEN
+print(f"Swap type: {swap_type.value}")
+with open(source_filep) as fsin, open(reader_prediction_filep) as frin, open(output_filep,
+                                                                             'w') as fout:
+    source_examples = json.load(fsin)
+    new_examples = []
+    if swap_type == SwapType.WITH_READER_PRED:
+        reader_predictions = json.load(frin)
+        new_examples = swap_answers_with_reader_pred(source_examples, reader_predictions)
+    elif swap_type == SwapType.UNK_TOKEN:
+        new_examples = swap_answer_with_unk_token(source_examples)
+    elif swap_type == SwapType.SHIFT_1:
+        new_examples = swap_answer_with_shifted_by_1(source_examples)
+    else:
+        raise ValueError(f"not supported type {swap_type.value}")
+
+    assert len(new_examples) > 0
     json.dump(new_examples, fout)
 
