@@ -13,11 +13,11 @@ efficient QA [dataset](https://github.com/google-research-datasets/natural-quest
 
 ## checkpoint
 ```shell
-python data/download_data.py --resource checkpoint.retriever.single-adv-hn.nq.bert-base-encoder
-python data/download_data.py --resource checkpoint.retriever.single.nq.bert-base-encoder
-python data/download_data.py --resource checkpoint.reader.nq-single.hf-bert-base
+python dpr/data/download_data.py --resource checkpoint.retriever.single-adv-hn.nq.bert-base-encoder
+python dpr/data/download_data.py --resource checkpoint.retriever.single.nq.bert-base-encoder
+python dpr/data/download_data.py --resource checkpoint.reader.nq-single.hf-bert-base
 
-python data/download_data.py --resource data.retriever_results.nq.single.wikipedia_passages
+python dpr/data/download_data.py --resource data.retriever_results.nq.single.wikipedia_passages
 ```
 
 # Prepare data
@@ -113,10 +113,10 @@ python generate_dense_embeddings.py \
 
 ```bash
 python dense_retriever.py \
-	model_file=/home/yilu/DPR/dpr/downloads/checkpoint/retriever/single/nq/bert-base-encoder.cp \
+	model_file=/home/ec2-user/SageMaker/DPR-exp/downloads/checkpoint/retriever/single/nq/bert-base-encoder.cp \
 	qa_dataset=nq_test \
 	ctx_datatsets=[dpr_wiki] \
-	encoded_ctx_files=[\"/home/yilu/DPR/dpr/downloads/embeddings/dpr_wiki/shard_*\"] \
+	encoded_ctx_files=[\"/home/ec2-user/SageMaker/DPR-exp/downloads/data/retriever_results/nq/single/wikipedia_passages_*\"] \
 	out_file=/home/yilu/DPR/dpr/outputs/baseline_retrieval/
 ```
 

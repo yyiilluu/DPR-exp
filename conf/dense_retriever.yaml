@@ -49,7 +49,7 @@ kilt_out_file:
 # A trained bi-encoder checkpoint file to initialize the model
 model_file:
 
-validate_as_tables: True
+validate_as_tables: False
 
 # RPC settings
 rpc_retriever_cfg_file:
