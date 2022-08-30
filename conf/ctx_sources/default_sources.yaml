@@ -7,5 +7,5 @@ dpr_wiki:
 
 dpr_wiki_neg_answers_t5:
   _target_: dpr.data.retriever_data.CsvCtxSrc
-  file: /home/maxtian/DPR-exp/psgs_w100_neg_answers.tsv
+  file: /root/dataset/psgs_w100_neg_answers.tsv
   id_prefix: 'wiki:'

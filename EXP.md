@@ -111,13 +111,23 @@ python generate_dense_embeddings.py \
 	out_file=/home/yilu/DPR/dpr/downloads/embeddings/dpr_wiki/shard
 ```
 
+gen custom embeddings
+```
+python generate_dense_embeddings.py \
+	model_file=/root/DPR-exp/downloads/checkpoint/retriever/single/nq/bert-base-encoder.cp \
+	ctx_src=dpr_wiki_neg_answers_t5 \
+	num_shards=10 \
+	out_file=/home/yilu/DPR/dpr/downloads/embeddings/dpr_t5_neg_wiki/shard
+```
+
+
 ```bash
 python dense_retriever.py \
 	model_file=/home/ec2-user/SageMaker/DPR-exp/downloads/checkpoint/retriever/single/nq/bert-base-encoder.cp \
 	qa_dataset=nq_test \
 	ctx_datatsets=[dpr_wiki] \
 	encoded_ctx_files=[\"/home/ec2-user/SageMaker/DPR-exp/downloads/data/retriever_results/nq/single/wikipedia_passages_*\"] \
-	out_file=/home/yilu/DPR/dpr/outputs/baseline_retrieval/
+	out_file=/home/ec2-user/DPR/dpr/outputs/baseline_retrieval/result.jsonl
 ```
 
 python dense_retriever.py \
