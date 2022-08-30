@@ -121,14 +121,14 @@ def main(cfg: DictConfig):
     }
     model_to_load.load_state_dict(ctx_state, strict=False)
 
-    # logger.info("reading data source: %s", cfg.ctx_src)
-    #
-    # ctx_src = hydra.utils.instantiate(cfg.ctx_sources[cfg.ctx_src])
-    # all_passages_dict = {}
-    # ctx_src.load_data_to(all_passages_dict)
-    # all_passages = [(k, v) for k, v in all_passages_dict.items()]
+    logger.info("reading data source: %s", cfg.ctx_src)
 
-    shard_size = math.ceil(21015324 / cfg.num_shards)
+    ctx_src = hydra.utils.instantiate(cfg.ctx_sources[cfg.ctx_src])
+    all_passages_dict = {}
+    ctx_src.load_data_to(all_passages_dict)
+    all_passages = [(k, v) for k, v in all_passages_dict.items()]
+
+    shard_size = math.ceil(len(all_passages) / cfg.num_shards)
 
 
     for shard_id in range(cfg.num_shards):
@@ -139,19 +139,19 @@ def main(cfg: DictConfig):
             "Producing encodings for passages range: %d to %d (out of total %d)",
             start_idx,
             end_idx,
-            21015324,
+            len(all_passages),
         )
-        # shard_passages = all_passages[start_idx:end_idx]
-        #
-        # data = gen_ctx_vectors(cfg, shard_passages, encoder, tensorizer, True)
-        #
-        # file = cfg.out_file + "_" + str(cfg.shard_id)
-        # pathlib.Path(os.path.dirname(file)).mkdir(parents=True, exist_ok=True)
-        # logger.info("Writing results to %s" % file)
-        # with open(file, mode="wb") as f:
-        #     pickle.dump(data, f)
-        #
-        # logger.info("Total passages processed %d. Written to %s", len(data), file)
+        shard_passages = all_passages[start_idx:end_idx]
+
+        data = gen_ctx_vectors(cfg, shard_passages, encoder, tensorizer, True)
+
+        file = cfg.out_file + "_" + str(cfg.shard_id)
+        pathlib.Path(os.path.dirname(file)).mkdir(parents=True, exist_ok=True)
+        logger.info("Writing results to %s" % file)
+        with open(file, mode="wb") as f:
+            pickle.dump(data, f)
+
+        logger.info("Total passages processed %d. Written to %s", len(data), file)
 
 
 if __name__ == "__main__":
