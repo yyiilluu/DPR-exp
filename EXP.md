@@ -114,10 +114,10 @@ python generate_dense_embeddings.py \
 gen custom embeddings
 ```
 python generate_dense_embeddings.py \
-	model_file=/home/ec2-user/src/DPR-exp/downloads/checkpoint/retriever/single/nq/bert-base-encoder.cp \
+	model_file=/home/ec2-user/SageMaker/DPR-exp/downloads/checkpoint/retriever/single/nq/bert-base-encoder.cp \
 	ctx_src=dpr_wiki_neg_answers_t5 \
-	num_shards=10 \
-	out_file=/home/yilu/DPR/dpr/downloads/embeddings/dpr_t5_neg_wiki/shard
+	num_shards=20 \
+	out_file=/home/ec2-user/src/data/dpr_t5_neg_wiki/shard_
 ```
 
 
