@@ -111,15 +111,18 @@ python generate_dense_embeddings.py \
 	out_file=/home/yilu/DPR/dpr/downloads/embeddings/dpr_wiki/shard
 ```
 
-gen custom embeddings
+###Gen custom embeddings
+download passage tsv
+```aws s3 ls s3 ls s3://forethought-sagemaker/mlds/research```
 ```
 python generate_dense_embeddings.py \
 	model_file=/home/ec2-user/SageMaker/DPR-exp/downloads/checkpoint/retriever/single/nq/bert-base-encoder.cp \
 	ctx_src=dpr_wiki_neg_answers_t5 \
-	num_shards=20 \
-	out_file=/home/ec2-user/src/data/dpr_t5_neg_wiki/shard_
+	num_shards=40 \
+	out_file=/home/ec2-user/SageMaker/DPR-exp/outputs/dpr_t5_neg_wiki/shard
 ```
 
+###Get retrieval results
 
 ```bash
 python dense_retriever.py \
@@ -128,6 +131,16 @@ python dense_retriever.py \
 	ctx_datatsets=[dpr_wiki] \
 	encoded_ctx_files=[\"/home/ec2-user/SageMaker/DPR-exp/downloads/data/retriever_results/nq/single/wikipedia_passages_*\"] \
 	out_file=/home/ec2-user/DPR/dpr/outputs/baseline_retrieval/result.jsonl
+```
+
+
+```bash
+python dense_retriever.py \
+	model_file=/home/ec2-user/SageMaker/DPR-exp/downloads/checkpoint/retriever/single/nq/bert-base-encoder.cp \
+	qa_dataset=nq_test \
+	ctx_datatsets=[dpr_wiki] \
+	encoded_ctx_files=[\"/home/ec2-user/SageMaker/DPR-exp/outputs/dpr_t5_neg_wiki/shard_*\"] \
+	out_file=/home/ec2-user/SageMaker/DPR-exp/outputs/evaluation/nq_neg_t5/result.jsonl
 ```
 
 python dense_retriever.py \
